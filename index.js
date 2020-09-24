@@ -27,12 +27,12 @@ function sha256(str, i) {
   for (const hex of hexFormatValues(sha)) {
     stringBuffer += hex;
   }
-  return stringBuffer.length > 32 
-    ? stringBuffer.slice(0, 32) 
+  return stringBuffer.length > i 
+    ? stringBuffer.slice(0, i) 
     : stringBuffer;
 }
 
-function encryptDecrypt(str, str2, str3, mode) {
+function generateKeys(str, str2, str3, mode) {
   const key = Buffer.from(str2);
   const iv = Buffer.from (str3.slice(0, 16));
   let output = '';

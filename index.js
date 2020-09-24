@@ -51,7 +51,7 @@ function encryptDecrypt(str, str2, str3, mode) {
   return output;
 }
 
-export default class Enkerip {
+class Enkerip {
 
   constructor({ secret1, secret2, padLength }) {
     this.secret1 = secret1;
@@ -71,3 +71,5 @@ export default class Enkerip {
     return encryptDecrypt(str, str2, str3, 'decrypt');
   }
 }
+
+module.exports = Enkerip;

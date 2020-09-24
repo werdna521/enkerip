@@ -32,23 +32,10 @@ function sha256(str, i) {
     : stringBuffer;
 }
 
-function generateKeys(str, str2, str3, mode) {
-  const key = Buffer.from(str2);
-  const iv = Buffer.from (str3.slice(0, 16));
-  let output = '';
-
-  if (mode === 'encrypt') {
-    const aes = crypto.createCipheriv('aes-256-cbc', key, iv);
-    output = aes.update(str, 'utf8', 'base64');
-    output += aes.final('base64');
-  } else if (mode === 'decrypt') {
-    const aes = crypto.createDecipheriv('aes-256-cbc', key, iv);
-    output = aes.update(str, 'base64');
-    output += aes.final();
-  } else {
-    output = 'Otak Udang';
-  }
-  return output;
+function generateKeys(keyString, ivString) {
+  const key = Buffer.from(keyString);
+  const iv = Buffer.from (ivString.slice(0, 16));
+  return [key, iv];
 }
 
 class Enkerip {
@@ -62,13 +49,17 @@ class Enkerip {
   encrypt(str) {
     const str2 = sha256(this.secret1, this.padLength);
     const str3 = this.secret2;
-    return encryptDecrypt(str, str2, str3, 'encrypt');
+    const [key, iv] = generateKeys(str2, str3);
+    const aes = crypto.createCipheriv('aes-256-cbc', key, iv);
+    return `${aes.update(str, 'utf8', 'base64')}${aes.final('base64')}`;
   }
   
   decrypt(str) {
     const str2 = sha256(this.secret1, this.padLength);
     const str3 = this.secret2;
-    return encryptDecrypt(str, str2, str3, 'decrypt');
+    const [key, iv] = generateKeys(str2, str3);
+    const aes = crypto.createDecipheriv('aes-256-cbc', key, iv);
+    return `${aes.update(str, 'base64')}${aes.final()}`;
   }
 }
 
